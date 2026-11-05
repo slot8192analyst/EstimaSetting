@@ -32,7 +32,7 @@
 
   /* 各セクションの検索対象テキスト */
   const blockText = (s) => norm(plain([
-    s.title, s.tag, s.lead, s.note,
+    s.title, s.tag, ...phases(s).map(plabel), s.lead, s.note,
     ...(s.items || []),
     ...(s.tables || []).flatMap((t) => [t.caption, ...(t.head || []), ...(t.rows || []).flat()])
   ].join(' ')));
@@ -52,6 +52,12 @@
         <tbody>${rows}</tbody></table></div>`;
   }
 
+  /* 局面バッジ / 設定差★。phase は文字列 or 配列。AT中の表示名は機種ごとに phaseLabels で差し替え可 */
+  let PL = {};
+  const phases = (s) => [].concat(s.phase || []);
+  const plabel = (p) => PL[p] || p;
+  const stars = (n) => `<span class="stars" role="img" aria-label="設定差の大きさ ${n}/5"><span class="stl">設定差</span><span class="stv">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span></span>`;
+
   function block(s, i, q) {
     const no = String(i + 1).padStart(2, '0');
     return `<section class="blk" id="s${i}" data-i="${i}">
@@ -59,7 +65,11 @@
         <div class="blk-head">
           <span class="no">${no}</span>
           <h2>${rt(s.title, q)}</h2>
-          ${s.tag ? `<span class="badge${s.tag === 'メイン' ? ' acc' : ''}">${esc(s.tag)}</span>` : ''}
+        </div>
+        <div class="blk-badges">
+          ${phases(s).map((p) => `<span class="badge ph ${p === 'AT中' ? 'at' : p === '通常時' ? 'nm' : ''}">${esc(plabel(p))}</span>`).join('')}
+          ${s.tag && !s.phase ? `<span class="badge">${esc(s.tag)}</span>` : ''}
+          ${typeof s.stars === 'number' && s.stars > 0 ? stars(s.stars) : ''}
         </div>
         ${s.image ? `<div class="blk-img"><img src="${esc(s.image)}" alt="${esc(s.title)}" loading="lazy" onerror="this.closest('.blk-img').remove()"></div>` : ''}
         ${s.lead ? `<p class="ld">${rt(s.lead, q)}</p>` : ''}
@@ -78,7 +88,9 @@
 
   getJSON(`data/machines/${id}.json`).then((m) => {
     document.title = `${m.name} 設定判別 | ESTIMA SETTING`;
+    PL = m.phaseLabels || {};
     const secs = m.sections || [];
+    let phase = 'all';
     const texts = secs.map(blockText);
     let q = params.get('q') || '';
 
@@ -105,6 +117,10 @@
           <span class="clear" id="pc" role="button" aria-label="クリア">✕</span>
           <span class="cnt" id="pcnt"></span>
         </div>
+        <div class="phasebar" id="phasebar" role="tablist" aria-label="局面で絞り込み">
+          ${['all', '通常時', 'AT中'].map((p) => `<button type="button" class="pchip${p === 'all' ? ' on' : ''}" data-p="${p}" role="tab">${p === 'all' ? 'すべて' : esc(plabel(p))}</button>`).join('')}
+          <span class="pnote">★ = 設定差の大きさ</span>
+        </div>
         <nav class="toc" id="toc" aria-label="目次">
           ${secs.map((s, i) => `<a href="#s${i}" data-i="${i}"><i>${String(i + 1).padStart(2, '0')}</i>${esc(s.title)}</a>`).join('')}
         </nav>
@@ -128,14 +144,14 @@
       q = pq.value;
       ps.classList.toggle('has', !!q);
       const ts = tokens(q);
-      const shown = secs.map((s, i) => ts.every((t) => texts[i].includes(t)));
+      const shown = secs.map((s, i) => (phase === 'all' || phases(s).includes(phase)) && ts.every((t) => texts[i].includes(t)));
       blocksEl.innerHTML = secs.map((s, i) => (shown[i] ? block(s, i, q) : '')).join('') ||
         '';
-      if (ts.length && !shown.some(Boolean)) {
+      if ((ts.length || phase !== 'all') && !shown.some(Boolean)) {
         blocksEl.innerHTML = `<div class="wrap"><div class="noresult" style="margin:40px 0;border:1px solid var(--line);padding:56px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:13px"><b style="display:block;color:var(--mute);font-size:14px;margin-bottom:6px">該当する項目がありません</b>別のキーワードで検索してください</div></div>`;
       }
       toc.querySelectorAll('a').forEach((a) => a.classList.toggle('off', !shown[+a.dataset.i]));
-      cnt.textContent = ts.length ? `${shown.filter(Boolean).length}/${secs.length}` : `${secs.length}項目`;
+      cnt.textContent = (ts.length || phase !== 'all') ? `${shown.filter(Boolean).length}/${secs.length}` : `${secs.length}項目`;
       observe();
     }
 
@@ -156,6 +172,12 @@
       blocksEl.querySelectorAll('.blk').forEach((b) => io.observe(b));
     }
 
+    document.getElementById('phasebar').addEventListener('click', (e) => {
+      const b = e.target.closest('.pchip'); if (!b) return;
+      phase = b.dataset.p;
+      document.querySelectorAll('.pchip').forEach((x) => x.classList.toggle('on', x === b));
+      render();
+    });
     pq.addEventListener('input', render);
     document.getElementById('pc').addEventListener('click', () => { pq.value = ''; render(); pq.focus(); });
     render();
