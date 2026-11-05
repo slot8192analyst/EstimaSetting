@@ -92,7 +92,7 @@
   function todoBox(t, secs) {
     if (!t || !t.items || !t.items.length) return '';
     const st = todoLoad();
-    const lvCls = { 'メイン': 'm', '補助': 'a', '示唆': 's' };
+    const lvCls = { 'AT中': 'm', '通常時': 'a', 'すべて': 's' };
     const items = t.items.map((x, i) => {
       const ref = x.ref ? secs.findIndex((s) => s.title === x.ref) : -1;
       const on = !!st[i];
