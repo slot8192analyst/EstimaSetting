@@ -156,3 +156,29 @@ mark{background:color-mix(in oklch,var(--accent) 35%,transparent);color:var(--fg
   .tbl th,.tbl td{padding:10px 12px}
   
 }
+
+/* やることリスト（判別の優先順位の下） */
+.todobox{border:1px solid var(--line2);background:var(--bg2);padding:18px 20px;margin-top:16px}
+.todo-h{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.todo-h h2{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;color:var(--fg);margin-right:auto}
+.todo-c{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.todo-r{font-family:var(--mono);font-size:11px;color:var(--dim);background:none;border:1px solid var(--line2);padding:3px 10px;cursor:pointer}
+.todo-r:hover{color:var(--fg);border-color:var(--mute)}
+.todo-l{list-style:none;counter-reset:t}
+.todo-l li{counter-increment:t;display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding:4px 0}
+.todo-l li:first-child{border-top:0}
+.todo-l label{flex:1;min-width:0;display:flex;align-items:flex-start;gap:12px;padding:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.todo-l input{position:absolute;opacity:0;width:1px;height:1px}
+.todo-l .bx{flex:none;width:20px;height:20px;border:1.5px solid var(--line2);margin-top:1px;position:relative;transition:background .15s,border-color .15s}
+.todo-l input:focus-visible+.bx{outline:2px solid var(--accent);outline-offset:2px}
+.todo-l input:checked+.bx{background:var(--accent);border-color:var(--accent)}
+.todo-l input:checked+.bx::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.todo-l .tx{font-size:14px;line-height:1.65}
+.todo-l .tx strong{color:var(--fg);font-weight:700}
+.todo-l li.done .tx{color:var(--dim);text-decoration:line-through;text-decoration-color:var(--line2)}
+.todo-l li.done .tx strong{color:var(--dim)}
+.todo-l .lv{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;border:1px solid var(--line2);padding:0 6px;margin-right:8px;line-height:1.6;vertical-align:1px;color:var(--mute)}
+.todo-l .lv.m{border-color:var(--accent);background:var(--accent);color:var(--bg);font-weight:700}
+.todo-l .lv.a{border-color:var(--accent);color:var(--accent)}
+.todo-l .go{flex:none;font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid var(--line2);padding:6px 10px;white-space:nowrap}
+.todo-l .go:hover{border-color:var(--accent)}

@@ -56,6 +56,9 @@ images/                 画像置き場
 - `image` : 機種ページ上部の画像（任意）
 - `spec` : `[{k, v}]` スペック表
 - `summary` : `{title, items[]}` 判別の優先順位
+- `todo` : `{title, items[]}` やることリスト（判別の優先順位の直下に表示。任意）
+  - `items[]` : `{lv, text, ref}`。`lv` は `メイン` / `補助` / `示唆`（優先順に並べる）、`text` は本文（`**太字**`可）、`ref` は対応する `sections[].title`（「見る」ボタンでその解析ブロックへジャンプ）
+  - チェック状態は端末の `localStorage` に機種ごとに保存。「リセット」で全解除
 - `sections[]` : 解析ブロック（見出し）
   - `title`, `tag`（`メイン` / `補助` / `示唆` / `その他`）, `lead`, `note`
   - `image` : **見出しごとの画像**（任意。例 `images/tokyoghoul/cz-end.png`）

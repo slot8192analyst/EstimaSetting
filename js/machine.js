@@ -80,6 +80,42 @@
     </section>`;
   }
 
+  /* やることリスト（判別の優先順位の下に表示）。
+     todo.items[] = { text, lv?(メイン/補助/示唆), ref?(解析ブロックの title) }。チェック状態は localStorage に保存 */
+  const TODO_KEY = `estima:todo:${id}`;
+  function todoLoad() {
+    try { return JSON.parse(localStorage.getItem(TODO_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function todoSave(st) {
+    try { localStorage.setItem(TODO_KEY, JSON.stringify(st)); } catch (e) { /* 保存不可でも動作は継続 */ }
+  }
+  function todoBox(t, secs) {
+    if (!t || !t.items || !t.items.length) return '';
+    const st = todoLoad();
+    const lvCls = { 'メイン': 'm', '補助': 'a', '示唆': 's' };
+    const items = t.items.map((x, i) => {
+      const ref = x.ref ? secs.findIndex((s) => s.title === x.ref) : -1;
+      const on = !!st[i];
+      return `<li class="${on ? 'done' : ''}">
+        <label>
+          <input type="checkbox" data-k="${i}"${on ? ' checked' : ''}>
+          <span class="bx" aria-hidden="true"></span>
+          <span class="tx">${x.lv ? `<span class="lv ${lvCls[x.lv] || ''}">${esc(x.lv)}</span>` : ''}${rt(x.text)}</span>
+        </label>
+        ${ref >= 0 ? `<a class="go" href="#s${ref}" data-i="${ref}" aria-label="解析ブロックを見る">見る</a>` : ''}
+      </li>`;
+    }).join('');
+    const n = t.items.filter((_, i) => st[i]).length;
+    return `<div class="todobox" id="todo">
+      <div class="todo-h">
+        <h2>${esc(t.title || 'やることリスト')}</h2>
+        <span class="todo-c" id="todoC">${n}/${t.items.length}</span>
+        <button type="button" class="todo-r" id="todoR">リセット</button>
+      </div>
+      <ul class="todo-l">${items}</ul>
+    </div>`;
+  }
+
   function fail(msg) {
     main.innerHTML = `<div class="wrap"><div class="err">${msg}<br><a href="./" style="border-bottom:1px solid var(--line2)">← 機種一覧へ戻る</a></div></div>`;
   }
@@ -107,6 +143,7 @@
           </div>
           ${m.spec ? `<dl class="spec">${m.spec.map((s) => `<div><dt>${esc(s.k)}</dt><dd>${rt(s.v)}</dd></div>`).join('')}</dl>` : ''}
           ${m.summary ? `<div class="sumbox"><h2>${esc(m.summary.title || 'POINT')}</h2><ol>${m.summary.items.map((x) => `<li><span>${rt(x)}</span></li>`).join('')}</ol></div>` : ''}
+          ${todoBox(m.todo, secs)}
         </div>
       </section>
 
@@ -178,6 +215,35 @@
       document.querySelectorAll('.pchip').forEach((x) => x.classList.toggle('on', x === b));
       render();
     });
+    /* やることリスト: チェック保存 / リセット / 解析ブロックへのジャンプ */
+    const todoEl = document.getElementById('todo');
+    if (todoEl) {
+      const boxes = () => [...todoEl.querySelectorAll('input[type=checkbox]')];
+      const sync = () => {
+        const st = {};
+        boxes().forEach((b) => { b.closest('li').classList.toggle('done', b.checked); if (b.checked) st[b.dataset.k] = 1; });
+        todoSave(st);
+        document.getElementById('todoC').textContent = `${Object.keys(st).length}/${boxes().length}`;
+      };
+      todoEl.addEventListener('change', (e) => { if (e.target.matches('input[type=checkbox]')) sync(); });
+      document.getElementById('todoR').addEventListener('click', () => {
+        if (!boxes().some((b) => b.checked)) return;
+        boxes().forEach((b) => { b.checked = false; });
+        sync();
+      });
+      todoEl.addEventListener('click', (e) => {
+        const a = e.target.closest('a.go'); if (!a) return;
+        e.preventDefault();
+        let t = document.getElementById(`s${a.dataset.i}`);
+        if (!t) { /* 検索・局面フィルタで非表示なら解除して表示 */
+          pq.value = ''; phase = 'all';
+          document.querySelectorAll('.pchip').forEach((x) => x.classList.toggle('on', x.dataset.p === 'all'));
+          render();
+          t = document.getElementById(`s${a.dataset.i}`);
+        }
+        if (t) { t.scrollIntoView({ behavior: 'smooth' }); history.replaceState(null, '', `#s${a.dataset.i}`); }
+      });
+    }
     pq.addEventListener('input', render);
     document.getElementById('pc').addEventListener('click', () => { pq.value = ''; render(); pq.focus(); });
     render();
