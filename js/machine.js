@@ -92,7 +92,7 @@
   function todoBox(t, secs) {
     if (!t || !t.items || !t.items.length) return '';
     const st = todoLoad();
-    const lvCls = { 'メイン': 'm', '補助': 'a', '示唆': 's' };
+    const lvCls = { 'AT中': 'm', '通常時': 'a', 'すべて': 's' };
     const items = t.items.map((x, i) => {
       const ref = x.ref ? secs.findIndex((s) => s.title === x.ref) : -1;
       const on = !!st[i];
@@ -132,9 +132,9 @@
 
     main.innerHTML = `
       <section class="mh">
+        ${m.image ? `<div class="mh-bg" aria-hidden="true"><img src="${esc(m.image)}" alt="" onerror="this.closest('.mh-bg').remove()"></div>` : ''}
         <div class="wrap">
-          <div class="mh-in${m.image ? '' : ' noimg'}">
-            ${m.image ? `<div class="mh-img"><img src="${esc(m.image)}" alt="${esc(m.name)}" onerror="this.closest('.mh-in').classList.add('noimg');this.closest('.mh-img').remove()"></div>` : ''}
+          <div class="mh-in">
             <div>
               <div class="mh-badges"><span class="badge acc">${esc(m.type)}</span><span class="badge">${esc(m.maker)}</span></div>
               <h1>${esc(m.name)}</h1>
