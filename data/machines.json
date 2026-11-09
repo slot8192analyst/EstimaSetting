@@ -6,7 +6,7 @@
       "name": "L 東京喰種",
       "kana": "とうきょうぐーる",
       "maker": "スパイキー",
-      "type": "スマスロ",
+      "type": "メイン",
       "intro": "2025-02-03",
       "payout": "97.5〜114.9%",
       "image": "images/tokyoghoul.webp",
@@ -18,7 +18,7 @@
       "name": "ミリオンゴッド-神々の凱旋-",
       "kana": "みりおんごっど かみがみのがいせん",
       "maker": "ユニバーサルブロス",
-      "type": "5号機",
+      "type": "メイン",
       "intro": "2015-04-06",
       "payout": "98.4〜119.7%",
       "image": "images/milliongod.webp",
@@ -30,12 +30,36 @@
       "name": "パチスロ 甲鉄城のカバネリ",
       "kana": "こうてつじょうのかばねり",
       "maker": "サミー",
-      "type": "6.5号機",
+      "type": "メイン",
       "intro": "2022-07-04",
       "payout": "97.8〜110.0%",
       "image": "images/kabaneri.webp",
       "tags": ["カバネリ", "かばねり", "甲鉄城", "無名", "生駒", "美馬"],
       "keywords": ["ST初当たり", "ボーナス", "CZ", "規定ゲーム数", "共通6枚ベル", "おみくじ", "サミートロフィー", "ST終了画面", "菖蒲", "BBランク", "駿城ボーナス"]
+    },
+    {
+      "id": "godzillaeva2",
+      "name": "Lパチスロ ゴジラ対エヴァンゲリオン2",
+      "kana": "ごじらたいえゔぁんげりおん2",
+      "maker": "SANKYO",
+      "type": "新台",
+      "intro": "2026-11-02",
+      "payout": "97.7〜114.9%",
+      "image": "images/godzillaeva2.webp",
+      "tags": ["ゴジラ","エヴァ","ゴジエヴァ"],
+      "keywords": [null]
+    },
+    {
+      "id": "seiya_ougon",
+      "name": "L 聖闘士星矢 黄金十二宮",
+      "kana": "せいんとせいやおうごんじゅうにきゅう",
+      "maker": "三洋",
+      "type": "新台",
+      "intro": "2026-11-02",
+      "payout": "97.5〜114.9%",
+      "image": "images/seiya_ougon.webp",
+      "tags": [null],
+      "keywords": [null]
     }
   ]
 }
