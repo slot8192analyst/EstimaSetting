@@ -5,7 +5,7 @@
   "maker": "ユニバーサルブロス",
   "type": "5号機",
   "intro": "2015-04-06",
-  "image": "",
+  "image": "images/milliongod.webp",
   "phaseLabels": {"AT中": "GG中"},
   "spec": [
     { "k": "機械割", "v": "98.4〜119.7%" },

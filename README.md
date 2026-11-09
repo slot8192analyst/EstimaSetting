@@ -53,7 +53,7 @@ images/                 画像置き場
 
 ### data/machines/<id>.json（機種ページ用）
 
-- `image` : 機種ページ上部の画像（任意）
+- `image` : 機種ページ上部の**背景画像**（任意。薄く・ぼかして表示。例 `images/tokyoghoul.webp`）。パスは `/` 区切りで書く（`\` はNG）
 - `spec` : `[{k, v}]` スペック表
 - `summary` : `{title, items[]}` 判別の優先順位
 - `todo` : `{title, items[]}` やることリスト（判別の優先順位の直下に表示。任意）

@@ -44,11 +44,16 @@ mark{background:color-mix(in oklch,var(--accent) 35%,transparent);color:var(--fg
 .noresult b{display:block;color:var(--mute);font-size:14px;margin-bottom:6px}
 
 /* ---- 機種ページ ---- */
-.mh{padding:clamp(28px,5vw,56px) 0 clamp(28px,5vw,48px);border-bottom:1px solid var(--line)}
-.mh-in{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:clamp(20px,4vw,48px);align-items:end}
-.mh-in.noimg{grid-template-columns:1fr}
-.mh-img{aspect-ratio:1/1;border:1px solid var(--line2);background:var(--bg2);overflow:hidden}
-.mh-img img{width:100%;height:100%;object-fit:cover;display:block}
+/* 機種ヘッダー: 画像は背景として薄く敷く（主張させない） */
+.mh{position:relative;isolation:isolate;overflow:hidden;padding:clamp(28px,5vw,56px) 0 clamp(28px,5vw,48px);border-bottom:1px solid var(--line)}
+.mh-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.mh-bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block;
+  opacity:.28;filter:blur(3px) saturate(.7) brightness(.85);transform:scale(1.06)} /* 低解像度の粗さもぼかして隠す */
+.mh-bg::after{content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,var(--bg) 0%,color-mix(in oklch,var(--bg) 55%,transparent) 55%,transparent 100%),
+    linear-gradient(180deg,transparent 40%,var(--bg) 100%)}
+.mh-in{display:block}
 .mh-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
 .mh h1{font-weight:900;font-size:clamp(26px,5vw,48px);line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
 .mh .meta{font-family:var(--mono);font-size:12px;color:var(--mute);margin-top:14px;display:flex;flex-wrap:wrap;gap:4px 18px}
@@ -152,7 +157,8 @@ mark{background:color-mix(in oklch,var(--accent) 35%,transparent);color:var(--fg
   .mi-img .ph{font-size:40px}
   .mi-nm{font-size:16px}
   .mh-in{grid-template-columns:1fr}
-  .mh-img{aspect-ratio:16/9}
+  .mh-bg img{opacity:.22;object-position:center}
+  .mh-bg::after{background:linear-gradient(180deg,color-mix(in oklch,var(--bg) 40%,transparent) 0%,var(--bg) 100%)}
   .tbl th,.tbl td{padding:10px 12px}
   
 }
